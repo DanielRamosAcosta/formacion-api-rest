@@ -4,7 +4,8 @@ const movies = [
   {id: "f31a3", title: 'Memento'},
   {id: "f31a4", title: 'Olvídate de mi'},
   {id: "f31a1", title: 'El club de la lucha'},
-  {id: "f31a6", title: 'Interestellar'}
+  {id: "f31a6", title: 'Interestellar'},
+  {id: "f31a7", title: 'Los miserables'}
 ]
 
 function findMovieById (id) {
@@ -25,8 +26,18 @@ function createMovie (movie) {
   return newMovie
 }
 
+function deleteMovieById (id) {
+  const indexElement = movies.findIndex(m => m.id === id)
+  if (indexElement < 0) {
+    throw new Error('Could not delete an element that not exist')
+  }
+  const movie = movies.splice(indexElement, 1)
+  return movie[0]
+}
+
 module.exports = {
   findMovieById,
   getAllMovies,
-  createMovie
+  createMovie,
+  deleteMovieById
 }
