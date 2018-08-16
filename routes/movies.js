@@ -3,33 +3,42 @@ const db = require('../database')
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
-  const movies = db.getAllMovies()
-  res.json(movies)
-})
-
-router.get('/:movieId', (req, res) => {
-  const movieId = req.params.movieId
-  const movie = db.findMovieById(movieId)
-
-  if (movie) {
-    res.json(movie)
-  } else {
-    res.status(404)
-    res.json({
-      error: `Could not find movie with id ${movieId}`
+router.get('/', (req, res, next) => {
+  db.getAllMovies()
+    .then(movies => {
+      res.json(movies)
     })
-  }
+    .catch(next)
 })
 
-router.post('/', (req, res) => {
-  const movie = db.createMovie({ title: req.body.title })
-  res.json(movie)
+router.get('/:movieId', (req, res, next) => {
+  const movieId = req.params.movieId
+
+  db.findMovieById(movieId)
+    .then(movie => 
+      movie 
+      ? res.json(movie)
+      : res.status(404).json({
+        error: `Could not find movie with id ${movieId}`
+      })
+    )
+    .catch(next)
 })
 
-router.delete('/:movieId', (req, res) => {
-  const movie = db.deleteMovieById(req.params.movieId)
-  res.json(movie)
+router.post('/', (req, res, next) => {
+  db.createMovie({ title: req.body.title })
+    .then(movie => {
+      res.json(movie)
+    })
+    .catch(next)
+})
+
+router.delete('/:movieId', (req, res, next) => {
+  db.deleteMovieById(req.params.movieId)
+    .then(movie => {
+      res.json(movie)
+    })
+    .catch(next)
 })
 
 module.exports = {

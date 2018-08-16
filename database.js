@@ -9,11 +9,11 @@ const movies = [
 ]
 
 function findMovieById (id) {
-  return movies.find(m => m.id === id)
+  return Promise.resolve(movies.find(m => m.id === id))
 }
 
 function getAllMovies () {
-  return movies
+  return Promise.resolve(movies)
 }
 
 function createMovie (movie) {
@@ -23,16 +23,16 @@ function createMovie (movie) {
   }
 
   movies.push(newMovie)
-  return newMovie
+  return Promise.resolve(newMovie)
 }
 
 function deleteMovieById (id) {
   const indexElement = movies.findIndex(m => m.id === id)
   if (indexElement < 0) {
-    throw new Error('Could not delete an element that not exist')
+    return Promise.reject(new Error('Could not delete an element that not exist'))
   }
   const movie = movies.splice(indexElement, 1)
-  return movie[0]
+  return Promise.resolve(movie[0])
 }
 
 module.exports = {
