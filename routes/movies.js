@@ -1,10 +1,14 @@
 const express = require('express')
-const db = require('../database')
+const { createMovieDAO } = require('../dao/movie')
+const { Movie } = require('../models/movie')
+const { toViewModel } = require('../view-models/movie')
+
+const movieDAO = createMovieDAO(Movie, toViewModel)
 
 const router = express.Router()
 
 router.get('/', (req, res, next) => {
-  db.getAllMovies()
+  movieDAO.getAllMovies()
     .then(movies => {
       res.json(movies)
     })
@@ -14,7 +18,7 @@ router.get('/', (req, res, next) => {
 router.get('/:movieId', (req, res, next) => {
   const movieId = req.params.movieId
 
-  db.findMovieById(movieId)
+  movieDAO.findMovieById(movieId)
     .then(movie => 
       movie 
       ? res.json(movie)
@@ -26,7 +30,7 @@ router.get('/:movieId', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  db.createMovie({ title: req.body.title })
+  movieDAO.createMovie({ title: req.body.title })
     .then(movie => {
       res.json(movie)
     })
@@ -34,7 +38,7 @@ router.post('/', (req, res, next) => {
 })
 
 router.delete('/:movieId', (req, res, next) => {
-  db.deleteMovieById(req.params.movieId)
+  movieDAO.deleteMovieById(req.params.movieId)
     .then(movie => {
       res.json(movie)
     })

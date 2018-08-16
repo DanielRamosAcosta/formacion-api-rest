@@ -1,7 +1,30 @@
-const http = require('http')
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const mongoose = require('mongoose');
+
+const { createConnectionString } = require('./utils/create-connection-string')
+
+const dbPassword = process.env.DB_PASSWORD
+
+if (!dbPassword) {
+  throw new Error('Tienes que configurar la variable de entorno DB_PASSWORD')
+}
+
+mongoose.connect(
+  createConnectionString({
+    userName: 'UsuarioPeliculas',
+    password: dbPassword,
+    databaseName: 'pelicuitas'
+  }),
+  { useNewUrlParser: true }
+).then(() => {
+  console.log("Conectado a la base de datos!!")
+})
+.catch(err => {
+  console.error("Ha habido un error al conectarse a la BBDD")
+  console.error(err)
+})
 
 const { router: moviesRouter } = require('./routes/movies')
 
